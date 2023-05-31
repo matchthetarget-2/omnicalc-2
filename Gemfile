@@ -107,3 +107,6 @@ group :test do
   gem "rspec-html-matchers"
   gem "webmock"
 end
+
+gem 'google-cloud-translate', '2.3.0'
+gem 'twilio-ruby'
