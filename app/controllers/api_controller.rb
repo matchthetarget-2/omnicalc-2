@@ -5,6 +5,8 @@ class ApiController < ApplicationController
   end
 
   def coords_to_weather
+    require 'open-uri'
+
     @lat = params.fetch("user_latitude").strip
     @lng = params.fetch("user_longitude").strip
 
@@ -12,7 +14,7 @@ class ApiController < ApplicationController
 
     api_url = "https://api.pirateweather.net/forecast/"+ key + "/" + @lat + "," +  @lng
     
-    response = open(api_url).read
+    response = URI.open(api_url).read
     
     results = JSON.parse(response)
 
@@ -30,14 +32,16 @@ class ApiController < ApplicationController
   end
 
   def street_to_coords
+    require 'open-uri'
+
     @street_address = params.fetch("user_street_address")
-    sanitized_street_address = URI.encode(@street_address)
+    sanitized_street_address = CGI.escape(@street_address)
 
     api_key = ENV.fetch("GMAPS_KEY")
 
     url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + sanitized_street_address + "&key=" + api_key
 
-    data = open(url).read
+    data = URI.open(url).read
     parsed_data = JSON.parse(data)
     location = parsed_data.fetch("results").at(0).fetch("geometry").fetch("location")
     @latitude = location.fetch("lat")
@@ -52,14 +56,16 @@ class ApiController < ApplicationController
   end
 
   def street_to_weather
+    require 'open-uri'
+
     @street_address = params.fetch("user_street_address").strip
-    sanitized_street_address = URI.encode(@street_address)
+    sanitized_street_address = CGI.escape(@street_address)
 
     gmaps_key = ENV.fetch("GMAPS_KEY")
 
     url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + sanitized_street_address + "&key=" + gmaps_key
 
-    data = open(url).read
+    data = URI.open(url).read
     parsed_data = JSON.parse(data)
     location = parsed_data.fetch("results").at(0).fetch("geometry").fetch("location")
     latitude = location.fetch("lat").to_s
@@ -70,7 +76,7 @@ class ApiController < ApplicationController
 
     api_url = "https://api.pirateweather.net/forecast/"+ api_key + "/" + latitude + "," +  longitude
     
-    response = open(api_url).read
+    response = URI.open(api_url).read
     # GMAPS_KEY=AIzaSyB92cYxPcYqgjwBJfWlwDQw_7yjuyU3tpA
     results = JSON.parse(response)
 
