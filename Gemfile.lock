@@ -473,7 +473,7 @@ DEPENDENCIES
   draft_generators
   draft_matchers
   faker
-  google-cloud-translate (= 2.3.0)
+  google-cloud-translate
   grade_runner
   htmlbeautifier
   http
